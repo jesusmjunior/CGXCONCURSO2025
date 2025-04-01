@@ -28,8 +28,17 @@ if usuario == "COGEX" and senha == "CGX":
             st.subheader(pagina)
             df = pd.read_csv(link)
             dados = {}
+
             for index, row in df.iterrows():
-                dados[row['Campo']] = st.text_input(f"{row['Campo']}", key=f"pg{idx+1}_{index}")
+                opcoes = [str(valor) for valor in df[row['Campo']].dropna().unique() if valor != '']
+                adicionar = st.checkbox(f"Adicionar manualmente: {row['Campo']}", key=f"add_{idx}_{index}")
+                if adicionar:
+                    dados[row['Campo']] = st.text_input(f"Digite {row['Campo']}", key=f"input_{idx}_{index}")
+                else:
+                    if opcoes:
+                        dados[row['Campo']] = st.selectbox(f"{row['Campo']}", options=opcoes, key=f"pg{idx+1}_{index}")
+                    else:
+                        dados[row['Campo']] = st.text_input(f"{row['Campo']}", key=f"pg{idx+1}_{index}")
 
             if pagina == "Página 1":
                 texto = f"""
